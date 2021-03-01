@@ -1,12 +1,7 @@
 import Constants from 'expo-constants';
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TextInput, Button, TouchableOpacity } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as Location from 'expo-location';
-import { ImageSourcePropType } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 
 function PlaceInfo(props: { placeName: string }): JSX.Element {
@@ -105,6 +100,7 @@ export default function OtherPlaces(): JSX.Element {
             <ScrollView contentContainerStyle={styles.placesView}>
                 <PlaceInfo placeName={'São Paulo'} />
                 <PlaceInfo placeName={'Rio de Janeiro'} />
+                <PlaceInfo placeName={'Belo Horizonte'} />
                 <PlaceInfo placeName={'Porto Alegre'} />
                 <PlaceInfo placeName={'Manaus'} />
             </ScrollView>
