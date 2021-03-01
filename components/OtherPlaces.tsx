@@ -1,13 +1,17 @@
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, Button } from 'react-native';
-
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, Button, TouchableOpacity } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as Location from 'expo-location';
 import { ImageSourcePropType } from 'react-native';
 
 
 function PlaceInfo(props: { placeName: string }): JSX.Element {
+
+    const navigation = useNavigation();
 
     const [placeInfo, setPlaceInfo] = useState<any>();
 
@@ -18,7 +22,11 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
             }).then(function (data) {
                 setPlaceInfo(data);
             })
-    }, [props.placeName])
+    }, [props.placeName]);
+
+    function handleOnPress(placeInfo:any) {
+        navigation.navigate('Home',{placeInfo});
+    }
 
     const styles = StyleSheet.create({
         container: {
@@ -31,7 +39,7 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
             marginBottom: 5,
             backgroundColor: 'hsl(0, 0%, 80%)'
         },
-        col1:{
+        col1: {
             alignItems: 'center',
             flexDirection: 'row',
         },
@@ -39,21 +47,23 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
             height: 50,
             width: 50
         },
-        weatherInfo:{
+        weatherInfo: {
             paddingRight: 10
         }
     })
 
     return (
-        <View style={styles.container}>
-            <View style={styles.col1}>
-                <Image style={styles.weatherImage} source={{ uri: 'http://openweathermap.org/img/wn/' + placeInfo?.weather[0].icon + '@2x.png' }} />
-                <Text>{placeInfo?.name}</Text>
+        <TouchableOpacity onPress={() => { handleOnPress(placeInfo) }}>
+            <View style={styles.container}>
+                <View style={styles.col1}>
+                    <Image style={styles.weatherImage} source={{ uri: 'http://openweathermap.org/img/wn/' + placeInfo?.weather[0].icon + '@2x.png' }} />
+                    <Text>{placeInfo?.name}</Text>
+                </View>
+                <View>
+                    <Text style={styles.weatherInfo}>{parseInt(placeInfo?.main.temp) + 'º'}</Text>
+                </View>
             </View>
-            <View>
-                <Text style={styles.weatherInfo}>{parseInt(placeInfo?.main.temp) + ' º'}</Text>
-            </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
@@ -71,13 +81,11 @@ export default function OtherPlaces(): JSX.Element {
             width: '100%'
         },
         textInput: {
-            flexBasis: '80%',
+            flexBasis: '100%',
             height: 40,
+            marginRight: 5,
             borderColor: 'gray',
             borderWidth: 1
-        },
-        buttonInput: {
-            flexBasis: '20%',
         },
         placesView: {
             marginTop: 5
@@ -92,7 +100,7 @@ export default function OtherPlaces(): JSX.Element {
         <View style={styles.container}>
             <View style={styles.form}>
                 <TextInput style={styles.textInput}></TextInput>
-                <Button title="Buscar" onPress={onPressHandler} style={styles.buttonInput}></Button>
+                <Button title="Buscar" onPress={() => { onPressHandler }}></Button>
             </View>
             <ScrollView contentContainerStyle={styles.placesView}>
                 <PlaceInfo placeName={'São Paulo'} />

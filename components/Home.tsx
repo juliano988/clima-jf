@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import * as Location from 'expo-location';
 import { ImageSourcePropType } from 'react-native';
 
-export default function Home(): JSX.Element {
+export default function Home({route}): JSX.Element {
 
     interface locationCoords {
       accuracy: number | null;
@@ -28,19 +28,20 @@ export default function Home(): JSX.Element {
         (async () => {
           await Location.requestPermissionsAsync();
           const loc = await Location.getCurrentPositionAsync({});
-          console.log(loc)
-          console.log(process.env.APPID)
           setLocation(loc.coords)
           fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + loc.coords.latitude + '&lon=' + loc.coords.longitude + '&units=metric&lang=pt_br&appid=1fb7c4580dd8026407af5aa4a4c5b072')
             .then(function (res) {
               return res.json();
             }).then(function (data) {
-              console.log(data)
               setLocalWeather(data);
             })
         })();
       }
     }, []);
+
+    useEffect(function(){
+        setLocalWeather(route.params?.placeInfo);
+    },[route.params?.placeInfo])
   
     const styles = StyleSheet.create({
       homeContainer: {
