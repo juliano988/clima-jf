@@ -66,7 +66,7 @@ export default function Home(): JSX.Element {
             <ScrollView>
                 <View style={styles.homeOtherInfosView}>
                     <OtherInfosItem infoImage={require('../assets/icons/atmospheric_pressure.png')} infoName={'Pressão Atmosférica'} infoValue={localWeather?.main.pressure} mesureUnit={'hPa'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/humidity.png')} infoName={'Humidade'} infoValue={localWeather?.main.humidity} mesureUnit={'%'} />
+                    <OtherInfosItem infoImage={require('../assets/icons/humidity.png')} infoName={'Umidade'} infoValue={localWeather?.main.humidity} mesureUnit={'%'} />
                     <OtherInfosItem infoImage={require('../assets/icons/wind.png')} infoName={'Velocidade do Vento'} infoValue={localWeather?.wind.speed} mesureUnit={'m/s'} />
                     <OtherInfosItem infoImage={require('../assets/icons/cloudiness.png')} infoName={'Nebulosidade'} infoValue={localWeather?.clouds.all} mesureUnit={'%'} />
                     <OtherInfosItem infoImage={require('../assets/icons/sunrise.png')} infoName={'Nascer do Sol'} infoValue={new Date(localWeather?.sys.sunrise * 1000).getHours() + ':' + new Date(localWeather?.sys.sunrise * 1000).getMinutes()} mesureUnit={'h:min'} />
