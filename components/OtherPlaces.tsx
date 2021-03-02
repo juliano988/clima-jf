@@ -20,8 +20,7 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
                 if (data) {
                     setPlaceInfo(data);
                 } else {
-                    setPlaceInfo(null)
-                    alert('Deu ruim');
+                    setPlaceInfo(null);
                 }
             })
     }, [props.placeName]);
@@ -68,15 +67,14 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
                 </View>
             </TouchableOpacity>
         )
-    }else{
-        return <></>
-    }
+    } else { return <></> }
+
 }
 
 export default function OtherPlaces(): JSX.Element {
 
     const [inputText, setInputText] = useState<string>('');
-    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo','Rio de Janeiro','Belo Horizonte','Porto Alegre','Manaus']);
+    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Porto Alegre', 'Manaus']);
 
     const styles = StyleSheet.create({
         container: {
@@ -110,14 +108,22 @@ export default function OtherPlaces(): JSX.Element {
         }
     })
 
-    function handleOnEndEditing(){
+    function handleOnEndEditing() {
         onPressHandler();
     }
 
     function onPressHandler() {
-        placeInfoCards.unshift(inputText.trim())
-        setplaceInfoCards(placeInfoCards)
-        setInputText('');
+        fetch('https://api.openweathermap.org/data/2.5/weather?q=' + inputText.trim() + '&lang=pt_br&units=metric&appid=1fb7c4580dd8026407af5aa4a4c5b072')
+            .then(function (res) {
+                if (res.ok) {
+                    placeInfoCards.unshift(inputText.trim())
+                    setplaceInfoCards(placeInfoCards)
+                    setInputText('');
+                } else {
+                    setInputText('');
+                    alert('Deu ruim');
+                }
+            })
     }
 
     return (
