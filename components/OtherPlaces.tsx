@@ -1,14 +1,16 @@
 import Constants from 'expo-constants';
 import React, { SetStateAction, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TextInput, TouchableOpacity, TextInputKeyPressEventData, NativeSyntheticEvent, TextInputEndEditingEventData } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
-function PlaceInfo(props: { placeName: string }): JSX.Element {
+function PlaceInfo(props: { placeName: string, placeInfoCardsState: Array<string[] | React.Dispatch<React.SetStateAction<string[]>>> }): JSX.Element {
 
     const navigation = useNavigation();
 
+    const [dinamicOpacity,setDinamicOpacity] = useState(1)
     const [placeInfo, setPlaceInfo] = useState<any>();
+    const [selectedCards,setSelectedCards] = useState<Array<string>>([])
 
     useEffect(function () {
         fetch('https://api.openweathermap.org/data/2.5/weather?q=' + props.placeName + '&lang=pt_br&units=metric&appid=1fb7c4580dd8026407af5aa4a4c5b072')
@@ -25,10 +27,6 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
             })
     }, [props.placeName]);
 
-    function handleOnPress(placeInfo: any) {
-        navigation.navigate('Home', { placeInfo });
-    }
-
     const styles = StyleSheet.create({
         container: {
             flexDirection: 'row',
@@ -38,7 +36,8 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
             width: '100%',
             marginTop: 5,
             marginBottom: 5,
-            backgroundColor: 'hsl(0, 0%, 80%)'
+            backgroundColor: 'hsl(0, 0%, 80%)',
+            opacity: 1
         },
         col1: {
             alignItems: 'center',
@@ -53,9 +52,26 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
         }
     })
 
+    function handleOnPress(placeInfo: any) {
+        navigation.navigate('Home', { placeInfo });
+    }
+
+    function handleOnLongPress(){
+        if(selectedCards.includes(props.placeName)){
+            selectedCards.splice(selectedCards.indexOf(props.placeName),1)
+            setDinamicOpacity(1)
+        }else{
+            selectedCards.push(props.placeName)
+            setDinamicOpacity(0.5)
+        }
+        setSelectedCards(selectedCards)
+    }
+
+
+
     if (placeInfo) {
         return (
-            <TouchableOpacity onPress={() => { handleOnPress(placeInfo) }}>
+            <TouchableOpacity style={{opacity: dinamicOpacity}} onPress={() => { handleOnPress(placeInfo) }} onLongPress={handleOnLongPress}>
                 <View style={styles.container}>
                     <View style={styles.col1}>
                         <Image style={styles.weatherImage} source={{ uri: 'http://openweathermap.org/img/wn/' + placeInfo?.weather[0].icon + '@2x.png' }} />
@@ -74,7 +90,7 @@ function PlaceInfo(props: { placeName: string }): JSX.Element {
 export default function OtherPlaces(): JSX.Element {
 
     const [inputText, setInputText] = useState<string>('');
-    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Porto Alegre', 'Manaus']);
+    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo']);
 
     const styles = StyleSheet.create({
         container: {
@@ -135,7 +151,7 @@ export default function OtherPlaces(): JSX.Element {
                 </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={styles.placesView} >
-                {placeInfoCards.map(function (placeName, index) { return <PlaceInfo placeName={placeName} key={index} /> })}
+                {placeInfoCards.map(function (placeName, index) { return <PlaceInfo placeName={placeName} key={index} placeInfoCardsState={[placeInfoCards,setplaceInfoCards]} /> })}
             </ScrollView>
         </View>
     )
