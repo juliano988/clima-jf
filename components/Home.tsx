@@ -6,6 +6,7 @@ import { StyleSheet, Text, View, Image, ScrollView, Route } from 'react-native';
 import * as Location from 'expo-location';
 import { ImageSourcePropType } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { RefreshControl } from 'react-native';
 
 export default function Home(): JSX.Element {
 
@@ -13,22 +14,29 @@ export default function Home(): JSX.Element {
 
     const [mount, setMount] = useState(false);
     const [localWeather, setLocalWeather] = useState<any>();
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    function onRefresh() {
+        setRefreshing(true);
+        setLocalWeather(undefined);
+        setMount(false);
+
+    }
 
     useEffect(function () {
-        if (mount === false) {
-            setMount(true);
-            (async () => {
-                await Location.requestPermissionsAsync();
-                const loc = await Location.getCurrentPositionAsync({});
-                fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + loc.coords.latitude + '&lon=' + loc.coords.longitude + '&units=metric&lang=pt_br&appid=1fb7c4580dd8026407af5aa4a4c5b072')
-                    .then(function (res) {
-                        return res.json();
-                    }).then(function (data) {
-                        setLocalWeather(data);
-                    })
-            })();
-        }
-    }, []);
+        setMount(true);
+        (async () => {
+            await Location.requestPermissionsAsync();
+            const loc = await Location.getCurrentPositionAsync({});
+            fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + loc.coords.latitude + '&lon=' + loc.coords.longitude + '&units=metric&lang=pt_br&appid=1fb7c4580dd8026407af5aa4a4c5b072')
+                .then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    setLocalWeather(data);
+                    setRefreshing(false);
+                })
+        })();
+    }, [mount]);
 
     useEffect(function () {
         setLocalWeather(routeParams.params?.placeInfo);
@@ -59,26 +67,28 @@ export default function Home(): JSX.Element {
     });
 
     return (
-        <View style={styles.homeContainer}>
-            <Text style={styles.homeTitle}>{localWeather?.name + ',' + localWeather?.sys.country}</Text>
-                <WeatherView localWeather={localWeather}/>
-            <Text style={styles.homeOtherInfosTitle}>Outras Inormações</Text>
-            <ScrollView>
-                <View style={styles.homeOtherInfosView}>
-                    <OtherInfosItem infoImage={require('../assets/icons/atmospheric_pressure.png')} infoName={'Pressão Atmosférica'} infoValue={localWeather?.main.pressure} mesureUnit={'hPa'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/humidity.png')} infoName={'Umidade'} infoValue={localWeather?.main.humidity} mesureUnit={'%'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/wind.png')} infoName={'Velocidade do Vento'} infoValue={localWeather?.wind.speed} mesureUnit={'m/s'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/cloudiness.png')} infoName={'Nebulosidade'} infoValue={localWeather?.clouds.all} mesureUnit={'%'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/sunrise.png')} infoName={'Nascer do Sol'} infoValue={new Date((localWeather?.sys.sunrise + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset()/60 + ':' + new Date(localWeather?.sys.sunrise * 1000).getMinutes()} mesureUnit={'h:min'} />
-                    <OtherInfosItem infoImage={require('../assets/icons/sunset.png')} infoName={'Por do Sol'} infoValue={new Date((localWeather?.sys.sunset + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset()/60 + ':' + new Date(localWeather?.sys.sunset * 1000).getMinutes()} mesureUnit={'h:min'} />
-                </View>
-            </ScrollView>
-            <StatusBar style="auto" />
-        </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={Constants.statusBarHeight}/>}>
+            <View style={styles.homeContainer}>
+                <Text style={styles.homeTitle}>{localWeather?.name + ',' + localWeather?.sys.country}</Text>
+                <WeatherView localWeather={localWeather} />
+                <Text style={styles.homeOtherInfosTitle}>Outras Inormações</Text>
+                <ScrollView>
+                    <View style={styles.homeOtherInfosView}>
+                        <OtherInfosItem infoImage={require('../assets/icons/atmospheric_pressure.png')} infoName={'Pressão Atmosférica'} infoValue={localWeather?.main.pressure} mesureUnit={'hPa'} />
+                        <OtherInfosItem infoImage={require('../assets/icons/humidity.png')} infoName={'Umidade'} infoValue={localWeather?.main.humidity} mesureUnit={'%'} />
+                        <OtherInfosItem infoImage={require('../assets/icons/wind.png')} infoName={'Velocidade do Vento'} infoValue={localWeather?.wind.speed} mesureUnit={'m/s'} />
+                        <OtherInfosItem infoImage={require('../assets/icons/cloudiness.png')} infoName={'Nebulosidade'} infoValue={localWeather?.clouds.all} mesureUnit={'%'} />
+                        <OtherInfosItem infoImage={require('../assets/icons/sunrise.png')} infoName={'Nascer do Sol'} infoValue={new Date((localWeather?.sys.sunrise + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunrise * 1000).getMinutes()} mesureUnit={'h:min'} />
+                        <OtherInfosItem infoImage={require('../assets/icons/sunset.png')} infoName={'Por do Sol'} infoValue={new Date((localWeather?.sys.sunset + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunset * 1000).getMinutes()} mesureUnit={'h:min'} />
+                    </View>
+                </ScrollView>
+                <StatusBar style="auto" />
+            </View>
+        </ScrollView>
     );
 }
 
-function WeatherView(props: {localWeather: any}) {
+function WeatherView(props: { localWeather: any }) {
 
     const styles = StyleSheet.create({
         homeWeatherView: {
