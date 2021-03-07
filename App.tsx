@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import Home from './components/Home'
 import OtherPlaces from './components/OtherPlaces'
+import Map from './components/Map'
 
 const Tab = createBottomTabNavigator();
 
@@ -33,11 +34,16 @@ export default function App(): JSX.Element {
     tabBarIcon: function(){return <Ionicons name="globe-outline" size={30} color="black" />}
   }
 
+  const tbScrOptionMapa:BottomTabNavigationOptions = {
+    tabBarIcon: function(){return <Ionicons name="map" size={24} color="black" />}
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator tabBarOptions={tbNavOption}>
         <Tab.Screen name="Home" component={Home} options={tbScrOptionHome}/>
         <Tab.Screen name="Locais" component={OtherPlaces} options={tbScrOptionLocais} />
+        <Tab.Screen name="Mapa" component={Map} options={tbScrOptionMapa} />
       </Tab.Navigator>
     </NavigationContainer>
   );

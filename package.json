@@ -20,6 +20,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-gesture-handler": "~1.8.0",
+    "react-native-maps": "0.27.1",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
@@ -27,13 +28,15 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
-    "@types/react": "~16.9.35",
+    "@types/jest": "^26.0.20",
+    "@types/react": "^16.9.56",
     "@types/react-dom": "~16.9.8",
-    "@types/react-native": "~0.63.2",
+    "@types/react-native": "^0.63.51",
+    "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.15.2",
     "@typescript-eslint/parser": "^4.15.2",
     "eslint": "^7.20.0",
-    "typescript": "~4.0.0"
+    "typescript": "^4.0.7"
   },
   "private": true
 }

@@ -49,6 +49,7 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
     })
 
     function handleOnPress(placeInfo: any) {
+        navigation.navigate('Mapa', { placeInfo });
         navigation.navigate('Home', { placeInfo });
     }
 
@@ -78,7 +79,7 @@ export default function OtherPlaces(): JSX.Element {
 
     const [inputText, setInputText] = useState<string>('');
     const [refreshing, setRefreshing] = React.useState(false);
-    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo','Rio de Janeiro','Belo Horizonte','Porto Alegre','Bahia','Manaus']);
+    const [placeInfoCards, setplaceInfoCards] = useState<Array<string>>(['São Paulo','Rio de Janeiro']);
 
     const styles = StyleSheet.create({
         container: {
