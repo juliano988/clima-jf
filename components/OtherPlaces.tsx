@@ -67,7 +67,7 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
                     <Text>{placeInfo?.name}</Text>
                 </View>
                 <View>
-                    <Text style={styles.weatherInfo}>{parseInt(placeInfo?.main.temp) + 'º'}</Text>
+                    <Text style={styles.weatherInfo}>{placeInfo?.main.temp ? parseInt(placeInfo?.main.temp) + 'º' : ''}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -113,10 +113,8 @@ export default function OtherPlaces(): JSX.Element {
     })
 
     function onRefresh(){
-        const temp = placeInfoCards;
         setRefreshing(true);
-        setplaceInfoCards([]);
-        setTimeout(function(arg){setplaceInfoCards(arg);setRefreshing(false);},1000,temp);
+        setTimeout(function(arg){setplaceInfoCards([]);setplaceInfoCards(arg);setRefreshing(false);},1000,placeInfoCards);
     }
 
     function handleOnEndEditing() {

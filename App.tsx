@@ -7,7 +7,8 @@
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBarOptions, BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 import Home from './components/Home'
 import OtherPlaces from './components/OtherPlaces'
@@ -16,11 +17,27 @@ const Tab = createBottomTabNavigator();
 
 export default function App(): JSX.Element {
 
+  const tbNavOption:BottomTabBarOptions | undefined = {
+    activeBackgroundColor: 'hsl(0, 0%, 80%)',
+    inactiveBackgroundColor: 'hsl(0, 0%, 90%)',
+    labelStyle:{
+      color: 'black'
+    },
+  }
+
+  const tbScrOptionHome:BottomTabNavigationOptions = {
+    tabBarIcon: function(){return  <Ionicons name="home-sharp" size={30} color="black" />},
+  }
+
+  const tbScrOptionLocais:BottomTabNavigationOptions = {
+    tabBarIcon: function(){return <Ionicons name="globe-outline" size={30} color="black" />}
+  }
+
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Settings" component={OtherPlaces} />
+      <Tab.Navigator tabBarOptions={tbNavOption}>
+        <Tab.Screen name="Home" component={Home} options={tbScrOptionHome}/>
+        <Tab.Screen name="Locais" component={OtherPlaces} options={tbScrOptionLocais} />
       </Tab.Navigator>
     </NavigationContainer>
   );
