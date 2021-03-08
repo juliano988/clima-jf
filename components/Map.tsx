@@ -49,16 +49,15 @@ export default function Map(): JSX.Element {
 
     useEffect(function () {
         if (mount) {
-            console.log(routeParams.params.placeInfoCards)
-            setPlacesInfo([])
+            const temp: any[] = [];
             routeParams.params.placeInfoCards.forEach((element: string) => {
                 (async () => {
                     await fetch('https://api.openweathermap.org/data/2.5/weather?q=' + element + '&lang=pt_br&units=metric&appid=1fb7c4580dd8026407af5aa4a4c5b072')
                         .then(function (res) {
                             return res.json()
                         }).then(function (data) {
-                            placesInfo.push(data)
-                            setPlacesInfo(placesInfo)
+                            temp.push(data)
+                            setPlacesInfo(temp)
                         });
                     setSelectedLocation([routeParams.params.placeInfo.coord.lat, routeParams.params.placeInfo.coord.lon]);
                 })();

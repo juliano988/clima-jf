@@ -60,6 +60,9 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
         props.placeInfoCardsState.placeInfoCards.splice(props.placeInfoCardsState.placeInfoCards.indexOf(props.placeName), 1);
         props.placeInfoCardsState.setplaceInfoCards(props.placeInfoCardsState.placeInfoCards);
         setdinamicContainerDisplay('none');
+        const placeInfoCards = props.placeInfoCardsState.placeInfoCards
+        navigation.navigate('Mapa', { placeInfo , placeInfoCards});
+        navigation.navigate('Locais');
         Vibration.vibrate(1)
     }
 
