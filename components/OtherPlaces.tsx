@@ -138,7 +138,7 @@ export default function OtherPlaces(): JSX.Element {
                         setInputText('');
                     } else {
                         setInputText('');
-                        alert('Deu ruim');
+                        alert('Localidade não encontrada');
                     }
                 })
         } else {

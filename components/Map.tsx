@@ -1,8 +1,9 @@
 import { ParamListBase, RouteProp, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, View, ActivityIndicator, Text, Image } from 'react-native';
+import { StyleSheet, Dimensions, View, ActivityIndicator, Text, Image, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
-import MapView, { AnimatedRegion, LatLng, Marker } from 'react-native-maps';
+import MapView, { AnimatedRegion, LatLng, Marker, Overlay } from 'react-native-maps';
+import { MaterialIcons } from '@expo/vector-icons';
 
 
 export default function Map(): JSX.Element {
@@ -10,6 +11,7 @@ export default function Map(): JSX.Element {
     const routeParams = useRoute<any>();
 
     const [mount, setMount] = useState<boolean>(false);
+    const [actualLocation,setActualLocation] = useState<any>();
     const [selectedLocation, setSelectedLocation] = useState<any>();
     const [placesInfo, setPlacesInfo] = useState<any>([]);
 
@@ -19,6 +21,7 @@ export default function Map(): JSX.Element {
                 (async () => {
                     await Location.requestPermissionsAsync();
                     const loc = await Location.getCurrentPositionAsync({});
+                    setActualLocation(loc)
                     setSelectedLocation([loc.coords.latitude, loc.coords.longitude]);
                     await fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + loc.coords.latitude + '&lon=' + loc.coords.longitude + '&units=metric&lang=pt_br&appid=1fb7c4580dd8026407af5aa4a4c5b072')
                         .then(function (res) {
@@ -85,10 +88,10 @@ export default function Map(): JSX.Element {
             padding: 5,
             borderRadius: 5
         },
-        placeNameLabel:{
+        placeNameLabel: {
             fontWeight: 'bold'
         },
-        markView:{
+        markView: {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center'
@@ -97,35 +100,47 @@ export default function Map(): JSX.Element {
             height: 50,
             width: 50,
         },
-        markTempLabel:{
+        markTempLabel: {
             fontSize: 20
+        },
+        actualLocationView: {
+            position: 'absolute',
+            top: '90%',
+            left: '85%',
+            backgroundColor: 'white',
+            padding: 5
         }
     });
 
     if (mount) {
         return (
-            <View style={styles.container}>
-                <MapView
-                    style={styles.map}
-                    region={{
-                        latitude: selectedLocation[0],
-                        longitude: selectedLocation[1],
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}>
-                    {placesInfo.map(function (marker: any, index: any) {
-                        return <Marker key={index} coordinate={{ latitude: marker.coord.lat, longitude: marker.coord.lon }} >
-                            <View style={styles.markMainView}>
-                                <Text style={styles.placeNameLabel}>{marker.name}</Text>
-                                <View style={styles.markView}>
-                                    <Image style={styles.markImg} source={{ uri: 'http://openweathermap.org/img/wn/' + marker?.weather[0].icon + '@2x.png' }} />
-                                    <Text style={styles.markTempLabel}>{parseInt(marker.main.temp,10) + 'º'}</Text>
+            <>
+                <View style={styles.container}>
+                    <MapView
+                        style={styles.map}
+                        region={{
+                            latitude: selectedLocation[0],
+                            longitude: selectedLocation[1],
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}>
+                        {placesInfo.map(function (marker: any, index: any) {
+                            return <Marker key={index} coordinate={{ latitude: marker.coord.lat, longitude: marker.coord.lon }} >
+                                <View style={styles.markMainView}>
+                                    <Text style={styles.placeNameLabel}>{marker.name}</Text>
+                                    <View style={styles.markView}>
+                                        <Image style={styles.markImg} source={{ uri: 'http://openweathermap.org/img/wn/' + marker?.weather[0].icon + '@2x.png' }} />
+                                        <Text style={styles.markTempLabel}>{parseInt(marker.main.temp, 10) + 'º'}</Text>
+                                    </View>
                                 </View>
-                            </View>
-                        </Marker>
-                    })}
-                </MapView>
-            </View>
+                            </Marker>
+                        })}
+                    </MapView>
+                </View>
+                <TouchableOpacity style={styles.actualLocationView} onPress={() => setSelectedLocation([actualLocation.coords.latitude,actualLocation.coords.longitude])}>
+                    <MaterialIcons name="my-location" size={30} color="black" />
+                </TouchableOpacity>
+            </>
         )
     } else { return <ActivityIndicator style={{ flex: 1 }} size='large' color='black' /> }
 

@@ -84,8 +84,8 @@ export default function Home(): JSX.Element {
                             <OtherInfosItem infoImage={require('../assets/icons/humidity.png')} infoName={'Umidade'} infoValue={localWeather?.main.humidity} mesureUnit={'%'} />
                             <OtherInfosItem infoImage={require('../assets/icons/wind.png')} infoName={'Velocidade do Vento'} infoValue={localWeather?.wind.speed} mesureUnit={'m/s'} />
                             <OtherInfosItem infoImage={require('../assets/icons/cloudiness.png')} infoName={'Nebulosidade'} infoValue={localWeather?.clouds.all} mesureUnit={'%'} />
-                            <OtherInfosItem infoImage={require('../assets/icons/sunrise.png')} infoName={'Nascer do Sol'} infoValue={new Date((localWeather?.sys.sunrise + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunrise * 1000).getMinutes()} mesureUnit={'h:min'} />
-                            <OtherInfosItem infoImage={require('../assets/icons/sunset.png')} infoName={'Por do Sol'} infoValue={new Date((localWeather?.sys.sunset + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunset * 1000).getMinutes()} mesureUnit={'h:min'} />
+                            <OtherInfosItem infoImage={require('../assets/icons/sunrise.png')} infoName={'Nascer do Sol'} infoValue={new Date((localWeather?.sys.sunrise + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunrise * 1000).getMinutes().toString(10).padStart(2,'0')} mesureUnit={'h:min'} />
+                            <OtherInfosItem infoImage={require('../assets/icons/sunset.png')} infoName={'Por do Sol'} infoValue={new Date((localWeather?.sys.sunset + localWeather?.timezone) * 1000).getHours() + new Date().getTimezoneOffset() / 60 + ':' + new Date(localWeather?.sys.sunset * 1000).getMinutes().toString(10).padStart(2,'0')} mesureUnit={'h:min'} />
                         </View>
                     </ScrollView>
                     <StatusBar style="auto" />
