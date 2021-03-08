@@ -11,6 +11,7 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
 
     const [dinamicContainerDisplay, setdinamicContainerDisplay] = useState<"flex" | "none">('flex')
     const [placeInfo, setPlaceInfo] = useState<any>();
+    const [placeInfoAll, setPlaceInfoAll] = useState<any>([]);
 
     useEffect(function () {
         fetch('https://api.openweathermap.org/data/2.5/weather?q=' + props.placeName + '&lang=pt_br&units=metric&appid=1fb7c4580dd8026407af5aa4a4c5b072')
@@ -19,6 +20,7 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
                     return res.json();
                 }
             }).then(function (data) {
+                setPlaceInfoAll(placeInfoAll);
                 setPlaceInfo(data);
             })
     }, [props.placeName]);
@@ -48,8 +50,9 @@ function PlaceInfo(props: { placeName: string, placeInfoCardsState: { placeInfoC
         }
     })
 
-    function handleOnPress(placeInfo: any) {
-        navigation.navigate('Mapa', { placeInfo });
+    function handleOnPress(placeInfo: any ) {
+        const placeInfoCards = props.placeInfoCardsState.placeInfoCards
+        navigation.navigate('Mapa', { placeInfo , placeInfoCards});
         navigation.navigate('Home', { placeInfo });
     }
 

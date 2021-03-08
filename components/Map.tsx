@@ -2,7 +2,7 @@ import { ParamListBase, RouteProp, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, View, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
-import MapView from 'react-native-maps';
+import MapView, { AnimatedRegion, LatLng, Marker } from 'react-native-maps';
 
 
 export default function Map(): JSX.Element {
@@ -11,6 +11,7 @@ export default function Map(): JSX.Element {
 
     const [mount, setMount] = useState<boolean>(false);
     const [selectedLocation, setSelectedLocation] = useState<any>();
+    const [placesInfo, setPlacesInfo] = useState<any>([]);
 
     useEffect(function () {
         if (mount === false) {
@@ -33,6 +34,18 @@ export default function Map(): JSX.Element {
             setSelectedLocation([routeParams.params.placeInfo.coord.lat, routeParams.params.placeInfo.coord.lon])
         }
     }, [routeParams.params]);
+
+    useEffect(function(){
+        routeParams.params.placeInfoCards.forEach((element: string) => {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + element + '&lang=pt_br&units=metric&appid=1fb7c4580dd8026407af5aa4a4c5b072')
+            .then(function(res){
+                return res.json()
+            }).then(function(data){
+                placesInfo.push(data)
+                setPlacesInfo(placesInfo)
+            })
+        });
+    },[placesInfo])
 
     const styles = StyleSheet.create({
         container: {
@@ -58,13 +71,9 @@ export default function Map(): JSX.Element {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
-                // region = {{
-                //     latitude: selectedPlace.coord.lat,
-                //     longitude: selectedPlace.coord.lon,
-                //     latitudeDelta: 0.0922,
-                //     longitudeDelta: 0.0421,
-                // }}
-                />
+                >
+                {placesInfo.map(function(marker:any,index:any){return <Marker key={index} title={marker.name} coordinate={{ latitude : marker.coord.lat , longitude : marker.coord.lon }} description={marker.description}/>})}
+                </MapView>
             </View>
         )
     } else { return <ActivityIndicator style={{ flex: 1 }} size='large' color='black' /> }
